@@ -82,3 +82,11 @@ chroma_db/
 *.temp
 temp/
 tmp/
+# Ajout des exclusions importantes au .gitignore
+frontend/node_modules/
+backend/venv/
+backend/.env
+backend/checkpoints.db
+backend/__pycache__/
+*.pyc
+.DS_Store

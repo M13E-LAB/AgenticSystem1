@@ -36,9 +36,11 @@ try:
     from langgraph.graph import StateGraph, START, END
     from langgraph.types import interrupt, Command
     from langgraph.checkpoint.sqlite import SqliteSaver  # SqliteSaver for persistence
-    from langchain_openai import ChatOpenAI
+    from langchain_openai import ChatOpenAI, OpenAIEmbeddings
     from langchain_core.messages import SystemMessage
     from langchain_core.tools import tool
+    from langchain_community.vectorstores import Chroma
+    from langchain_core.documents import Document
     from duckduckgo_search import DDGS  # Correct import!
     import wikipedia
     import time
@@ -50,6 +52,70 @@ except ImportError as e:
     AGENTS_AVAILABLE = False
     print(f"⚠️  Multi-agent system not available: {e}")
     print("💡 Using mock data instead")
+
+
+# ============================================================================
+# VECTOR DATABASE (RAG SYSTEM)
+# ============================================================================
+
+# Initialize ChromaDB vector store
+vector_db = None
+RAG_AVAILABLE = False
+
+try:
+    if AGENTS_AVAILABLE:
+        embeddings = OpenAIEmbeddings()
+        db_path = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
+        
+        vector_db = Chroma(
+            embedding_function=embeddings,
+            persist_directory=db_path,
+            collection_name="research_documents"
+        )
+        
+        # Add some example documents about AI and research topics
+        sample_docs = [
+            Document(
+                page_content="Artificial Intelligence (AI) has revolutionized various industries including healthcare, finance, and technology. Machine learning algorithms can now process vast amounts of data and make predictions with unprecedented accuracy.",
+                metadata={"source": "AI Overview", "topic": "artificial_intelligence"}
+            ),
+            Document(
+                page_content="Large Language Models (LLMs) like GPT-4 have demonstrated remarkable capabilities in natural language understanding, generation, and reasoning. They are trained on massive datasets and can perform tasks ranging from translation to code generation.",
+                metadata={"source": "LLM Guide", "topic": "language_models"}
+            ),
+            Document(
+                page_content="Multi-agent systems enable autonomous agents to collaborate and solve complex problems. Each agent has specific roles and can communicate with others to achieve common goals. LangGraph is a powerful framework for orchestrating such systems.",
+                metadata={"source": "Multi-Agent Systems", "topic": "agent_systems"}
+            ),
+            Document(
+                page_content="Vector databases like ChromaDB enable efficient similarity search and retrieval of documents based on semantic meaning. They use embeddings to represent text in high-dimensional space, making it possible to find relevant information quickly.",
+                metadata={"source": "Vector DB Guide", "topic": "vector_databases"}
+            ),
+            Document(
+                page_content="Research methodologies in AI involve systematic approaches to problem-solving, including data collection, experimentation, analysis, and peer review. Good research practices ensure reproducibility and validity of results.",
+                metadata={"source": "Research Methods", "topic": "research_methodology"}
+            )
+        ]
+        
+        # Check if collection is empty and add documents
+        try:
+            existing_count = vector_db._collection.count()
+            if existing_count == 0:
+                vector_db.add_documents(sample_docs)
+                print(f"✅ Vector DB initialized with {len(sample_docs)} sample documents")
+            else:
+                print(f"✅ Vector DB loaded with {existing_count} existing documents")
+        except:
+            # If collection doesn't exist, add documents
+            vector_db.add_documents(sample_docs)
+            print(f"✅ Vector DB created with {len(sample_docs)} sample documents")
+        
+        RAG_AVAILABLE = True
+        
+except Exception as e:
+    RAG_AVAILABLE = False
+    print(f"⚠️  Vector DB not available: {e}")
+    print("💡 Continuing without RAG capabilities")
 
 
 # ============================================================================
@@ -145,6 +211,39 @@ if AGENTS_AVAILABLE:
             print(f"Wikipedia search error: {e}")
             return []
 
+    @tool
+    def rag_search(query: str, max_results: int = 3) -> List[dict]:
+        """Search internal vector database (RAG) for relevant documents"""
+        if not RAG_AVAILABLE or vector_db is None:
+            print("    ⚠️ RAG not available")
+            return []
+        
+        try:
+            print(f"    📚 RAG search: '{query}'")
+            
+            # Similarity search in vector database
+            docs_with_scores = vector_db.similarity_search_with_relevance_scores(
+                query, 
+                k=max_results
+            )
+            
+            formatted_results = []
+            for doc, score in docs_with_scores:
+                formatted_results.append({
+                    "content": doc.page_content,
+                    "source": doc.metadata.get("source", "Internal KB"),
+                    "title": f"{doc.metadata.get('topic', 'Document')} (Score: {score:.2f})",
+                    "type": "rag",
+                    "relevance_score": score
+                })
+            
+            print(f"    ✅ RAG results: {len(formatted_results)} documents")
+            return formatted_results
+            
+        except Exception as e:
+            print(f"    ❌ RAG search error: {e}")
+            return []
+
     # Initialize LLM with Langfuse callback if available
     callbacks = [langfuse_handler] if LANGFUSE_AVAILABLE and langfuse_handler else []
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1, callbacks=callbacks)
@@ -194,22 +293,34 @@ def planner_agent_real(user_request: str) -> dict:
 
 
 def retrieval_agent_real(search_queries: List[str]) -> List[dict]:
-    """Real Retrieval Agent using DuckDuckGo + Wikipedia"""
+    """Real Retrieval Agent using RAG + DuckDuckGo + Wikipedia"""
     if not AGENTS_AVAILABLE:
         return []
     
     # Limit to first 2 queries for speed
     queries_to_search = search_queries[:2]
     print(f"📊 Searching {len(queries_to_search)} queries")
-    print(f"🌐 Using DuckDuckGo + Wikipedia")
+    print(f"🔍 Using RAG (Vector DB) + DuckDuckGo + Wikipedia")
     
+    all_rag_results = []
     all_web_results = []
     all_wiki_results = []
     
     for i, query in enumerate(queries_to_search):
         print(f"  🔎 Query {i+1}/{len(queries_to_search)}: {query}")
         
-        # Try DuckDuckGo first
+        # 1. Search RAG (Vector Database) FIRST - Internal knowledge
+        if RAG_AVAILABLE:
+            try:
+                print(f"    📚 Searching Vector DB (RAG)...")
+                rag_results = rag_search.invoke({"query": query, "max_results": 2})
+                if rag_results:
+                    all_rag_results.extend(rag_results)
+                    print(f"    ✅ RAG: {len(rag_results)} documents")
+            except Exception as e:
+                print(f"    ❌ RAG error: {e}")
+        
+        # 2. Search DuckDuckGo - External web sources
         try:
             print(f"    🌐 Searching DuckDuckGo...")
             web_results = web_search.invoke({"query": query, "max_results": 2})
@@ -217,13 +328,13 @@ def retrieval_agent_real(search_queries: List[str]) -> List[dict]:
                 all_web_results.extend(web_results)
                 print(f"    ✅ Web: {len(web_results)} results")
             else:
-                print(f"    ⚠️ DuckDuckGo: No results, trying Wikipedia...")
+                print(f"    ⚠️ DuckDuckGo: No results")
         except Exception as e:
-            print(f"    ❌ DuckDuckGo error: {e}, trying Wikipedia...")
+            print(f"    ❌ DuckDuckGo error: {e}")
         
-        # Also search Wikipedia
+        # 3. Search Wikipedia - External knowledge base
         try:
-            print(f"    📚 Searching Wikipedia...")
+            print(f"    📖 Searching Wikipedia...")
             wiki_results = wikipedia_search.invoke({"query": query, "max_results": 2})
             if wiki_results:
                 all_wiki_results.extend(wiki_results)
@@ -235,9 +346,9 @@ def retrieval_agent_real(search_queries: List[str]) -> List[dict]:
         if i < len(queries_to_search) - 1:
             time.sleep(0.5)
     
-    # Combine and deduplicate
-    all_results = all_web_results + all_wiki_results
-    print(f"📊 Total: {len(all_web_results)} web + {len(all_wiki_results)} wiki = {len(all_results)} results")
+    # Combine all sources (RAG first for priority)
+    all_results = all_rag_results + all_web_results + all_wiki_results
+    print(f"📊 Total: {len(all_rag_results)} RAG + {len(all_web_results)} web + {len(all_wiki_results)} wiki = {len(all_results)} results")
     
     unique_sources = []
     seen_content = set()

@@ -73,42 +73,16 @@ try:
             collection_name="research_documents"
         )
         
-        # Add some example documents about AI and research topics
-        sample_docs = [
-            Document(
-                page_content="Artificial Intelligence (AI) has revolutionized various industries including healthcare, finance, and technology. Machine learning algorithms can now process vast amounts of data and make predictions with unprecedented accuracy.",
-                metadata={"source": "AI Overview", "topic": "artificial_intelligence"}
-            ),
-            Document(
-                page_content="Large Language Models (LLMs) like GPT-4 have demonstrated remarkable capabilities in natural language understanding, generation, and reasoning. They are trained on massive datasets and can perform tasks ranging from translation to code generation.",
-                metadata={"source": "LLM Guide", "topic": "language_models"}
-            ),
-            Document(
-                page_content="Multi-agent systems enable autonomous agents to collaborate and solve complex problems. Each agent has specific roles and can communicate with others to achieve common goals. LangGraph is a powerful framework for orchestrating such systems.",
-                metadata={"source": "Multi-Agent Systems", "topic": "agent_systems"}
-            ),
-            Document(
-                page_content="Vector databases like ChromaDB enable efficient similarity search and retrieval of documents based on semantic meaning. They use embeddings to represent text in high-dimensional space, making it possible to find relevant information quickly.",
-                metadata={"source": "Vector DB Guide", "topic": "vector_databases"}
-            ),
-            Document(
-                page_content="Research methodologies in AI involve systematic approaches to problem-solving, including data collection, experimentation, analysis, and peer review. Good research practices ensure reproducibility and validity of results.",
-                metadata={"source": "Research Methods", "topic": "research_methodology"}
-            )
-        ]
-        
-        # Check if collection is empty and add documents
+        # Check if collection exists and has documents
         try:
             existing_count = vector_db._collection.count()
             if existing_count == 0:
-                vector_db.add_documents(sample_docs)
-                print(f"✅ Vector DB initialized with {len(sample_docs)} sample documents")
+                print(f"⚠️  Vector DB is empty - run load_pdf_to_rag.py to add your PDF")
+                print(f"   📄 PDF location: RA_2024_en_web (1).pdf")
             else:
-                print(f"✅ Vector DB loaded with {existing_count} existing documents")
-        except:
-            # If collection doesn't exist, add documents
-            vector_db.add_documents(sample_docs)
-            print(f"✅ Vector DB created with {len(sample_docs)} sample documents")
+                print(f"✅ Vector DB loaded with {existing_count} documents from PDF")
+        except Exception as e:
+            print(f"⚠️  Vector DB empty - run: python services/load_pdf_to_rag.py")
         
         RAG_AVAILABLE = True
         

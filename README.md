@@ -1,10 +1,10 @@
 # 🚀 Multi-Agent Research Assistant - Full Stack Application
 
-Une application full-stack complète avec interface web moderne pour un système multi-agents de recherche et création de briefings intelligents.
+A complete full-stack application with modern web interface for a multi-agent research system that creates intelligent briefings.
 
-## 📋 Vue d'ensemble
+## 📋 Overview
 
-Ce système utilise **5 agents spécialisés** orchestrés par LangGraph pour produire des briefings de recherche professionnels avec citations et validation humaine.
+This system uses **5 specialized agents** orchestrated by LangGraph to produce professional research briefings with citations and human validation.
 
 ### 🎯 Architecture
 
@@ -13,38 +13,38 @@ User Request → Planner → Retrieval → Human Approval → Writer → Critic 
 ```
 
 **Agents:**
-- 🎯 **Planner**: Analyse la demande et crée un plan de recherche
-- 🔍 **Retrieval**: Recherche web (DuckDuckGo) + Wikipedia
-- 👤 **Human Approval**: Validation des sources par l'utilisateur
-- ✍️ **Writer**: Rédaction du briefing avec citations
-- 🔍 **Critic**: Révision et amélioration du contenu
+- 🎯 **Planner**: Analyzes the request and creates a research plan
+- 🔍 **Retrieval**: Web search (DuckDuckGo) + Wikipedia
+- 👤 **Human Approval**: User validation of sources
+- ✍️ **Writer**: Briefing composition with citations
+- 🔍 **Critic**: Content review and improvement
 
 ---
 
-## 🚀 Installation & Démarrage
+## 🚀 Installation & Setup
 
-### Prérequis
+### Prerequisites
 - Python 3.9+
 - Node.js 18+
 - OpenAI API Key
 
-### 1. Configuration Backend
+### 1. Backend Configuration
 
 ```bash
 cd backend
 
-# Créer environnement virtuel
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Installer dépendances
+# Install dependencies
 pip install -r requirements.txt
 
-# Configurer les clés API (voir env_example.txt)
-nano .env  # Ajouter OPENAI_API_KEY et LANGFUSE keys
+# Configure API keys (see env_example.txt)
+nano .env  # Add OPENAI_API_KEY and LANGFUSE keys
 ```
 
-**Variables d'environnement requises dans `.env`:**
+**Required environment variables in `.env`:**
 ```bash
 OPENAI_API_KEY=sk-...
 LANGFUSE_PUBLIC_KEY=pk-lf-...
@@ -52,24 +52,24 @@ LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_HOST=https://cloud.langfuse.com
 ```
 
-### 2. Configuration Frontend
+### 2. Frontend Configuration
 
 ```bash
 cd frontend
 
-# Installer dépendances
+# Install dependencies
 npm install
 ```
 
-### 3. Démarrer l'Application
+### 3. Start the Application
 
-**Option A: Script automatique**
+**Option A: Automatic script**
 ```bash
 chmod +x start_app.sh
 ./start_app.sh
 ```
 
-**Option B: Manuel (2 terminaux)**
+**Option B: Manual (2 terminals)**
 
 Terminal 1 - Backend:
 ```bash
@@ -84,7 +84,7 @@ cd frontend
 npm run dev
 ```
 
-### 4. Accéder à l'Application
+### 4. Access the Application
 
 - 🎨 **Frontend**: http://localhost:3000
 - 📊 **Backend API**: http://localhost:8000
@@ -92,114 +92,114 @@ npm run dev
 
 ---
 
-## 📁 Structure du Projet
+## 📁 Project Structure
 
 ```
 Agentic AI/
 ├── backend/
-│   ├── main.py                    # API FastAPI
+│   ├── main.py                    # FastAPI API
 │   ├── services/
-│   │   ├── agents_integration.py  # Système multi-agents (LangGraph)
-│   │   ├── research_service.py    # Logique métier
-│   │   └── websocket_manager.py   # WebSocket temps réel
-│   ├── requirements.txt           # Dépendances Python
-│   └── venv/                      # Environnement virtuel
+│   │   ├── agents_integration.py  # Multi-agent system (LangGraph)
+│   │   ├── research_service.py    # Business logic
+│   │   └── websocket_manager.py   # Real-time WebSocket
+│   ├── requirements.txt           # Python dependencies
+│   └── venv/                      # Virtual environment
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/
-│   │   │   ├── Dashboard.jsx           # Page d'accueil
-│   │   │   ├── NewResearch.jsx         # Créer recherche
-│   │   │   ├── ResearchProgress.jsx    # Suivi temps réel
-│   │   │   └── Architecture.jsx        # Explication système
-│   │   ├── App.jsx                # Composant principal
-│   │   └── main.jsx               # Point d'entrée
+│   │   │   ├── Dashboard.jsx           # Home page
+│   │   │   ├── NewResearch.jsx         # Create research
+│   │   │   ├── ResearchProgress.jsx    # Real-time tracking
+│   │   │   └── Architecture.jsx        # System explanation
+│   │   ├── App.jsx                # Main component
+│   │   └── main.jsx               # Entry point
 │   ├── package.json
 │   └── vite.config.js
 │
-├── start_app.sh              # Script de démarrage
-├── env_example.txt           # Template configuration
-├── README.md                 # Ce fichier
-└── FULLSTACK_README.md       # Documentation technique détaillée
+├── start_app.sh              # Startup script
+├── env_example.txt           # Configuration template
+├── README.md                 # This file
+└── FULLSTACK_README.md       # Detailed technical documentation
 ```
 
 ---
 
-## 🎨 Fonctionnalités
+## 🎨 Features
 
-### ✅ Implémenté
+### ✅ Implemented
 
-- ✅ **API REST complète** (FastAPI)
-- ✅ **WebSocket** pour mises à jour en temps réel
-- ✅ **Interface React moderne** et responsive
-- ✅ **Pipeline visuel** des agents
-- ✅ **Approbation interactive** des sources
-- ✅ **Recherche web** (DuckDuckGo + Wikipedia)
-- ✅ **Citations professionnelles** dans les briefings
-- ✅ **Gestion d'erreurs** robuste
-- ✅ **Documentation live** de l'architecture
+- ✅ **Complete REST API** (FastAPI)
+- ✅ **WebSocket** for real-time updates
+- ✅ **Modern React interface** and responsive
+- ✅ **Visual agent pipeline**
+- ✅ **Interactive source approval**
+- ✅ **Web search** (DuckDuckGo + Wikipedia)
+- ✅ **Professional citations** in briefings
+- ✅ **Robust error handling**
+- ✅ **Live architecture documentation**
 
-### 🔄 Flux de Travail Utilisateur
+### 🔄 User Workflow
 
-1. **Créer une recherche** → Formulaire avec options
-2. **Suivre la progression** → Pipeline animé en temps réel
-3. **Approuver les sources** → Sélection interactive
-4. **Obtenir le briefing** → Document professionnel avec citations
+1. **Create a research** → Form with options
+2. **Track progress** → Animated pipeline in real-time
+3. **Approve sources** → Interactive selection
+4. **Get briefing** → Professional document with citations
 
 ---
 
 ## 📡 API Endpoints
 
-### Principaux endpoints:
+### Main endpoints:
 
-- `POST /api/research/create` - Créer une recherche
-- `GET /api/research/:id/status` - Obtenir le statut
-- `POST /api/research/:id/approve-sources` - Approuver les sources
-- `GET /api/research/list` - Lister toutes les recherches
-- `GET /api/architecture` - Documentation du système
-- `WS /ws/:id` - WebSocket pour temps réel
+- `POST /api/research/create` - Create a research
+- `GET /api/research/:id/status` - Get status
+- `POST /api/research/:id/approve-sources` - Approve sources
+- `GET /api/research/list` - List all research
+- `GET /api/architecture` - System documentation
+- `WS /ws/:id` - WebSocket for real-time
 
-📚 Documentation interactive complète: http://localhost:8000/docs
+📚 Complete interactive documentation: http://localhost:8000/docs
 
 ---
 
-## 🛠️ Stack Technique
+## 🛠️ Tech Stack
 
 ### Backend
-- **FastAPI** - API REST moderne
-- **Uvicorn** - Serveur ASGI
-- **LangGraph** - Orchestration multi-agents
-- **LangChain** - Framework LLM
+- **FastAPI** - Modern REST API
+- **Uvicorn** - ASGI server
+- **LangGraph** - Multi-agent orchestration
+- **LangChain** - LLM framework
 - **OpenAI** - GPT-4o-mini
-- **DuckDuckGo** - Recherche web
-- **Wikipedia** - Base de connaissances
+- **DuckDuckGo** - Web search
+- **Wikipedia** - Knowledge base
 
 ### Frontend
 - **React 18** - UI library
-- **Vite** - Build tool rapide
-- **TailwindCSS** - Styling moderne
+- **Vite** - Fast build tool
+- **TailwindCSS** - Modern styling
 - **React Router** - Navigation
 - **Axios** - HTTP client
-- **WebSocket** - Temps réel
+- **WebSocket** - Real-time
 
 ---
 
-## 💡 Exemples d'Utilisation
+## 💡 Usage Examples
 
-### Via l'Interface Web
+### Via Web Interface
 
-1. Aller sur http://localhost:3000
-2. Cliquer "Start New Research"
-3. Entrer votre question (ex: "Analyze the evolution of electric vehicle market")
-4. Configurer les options si besoin
-5. Suivre la progression en temps réel
-6. Approuver les sources trouvées
-7. Recevoir votre briefing professionnel
+1. Go to http://localhost:3000
+2. Click "Start New Research"
+3. Enter your question (e.g., "Analyze the evolution of electric vehicle market")
+4. Configure options if needed
+5. Track progress in real-time
+6. Approve found sources
+7. Receive your professional briefing
 
-### Via l'API
+### Via API
 
 ```bash
-# Créer une recherche
+# Create a research
 curl -X POST http://localhost:8000/api/research/create \
   -H "Content-Type: application/json" \
   -d '{
@@ -209,10 +209,10 @@ curl -X POST http://localhost:8000/api/research/create \
     "enable_wikipedia": true
   }'
 
-# Obtenir le statut
+# Get status
 curl http://localhost:8000/api/research/{research_id}/status
 
-# Approuver les sources
+# Approve sources
 curl -X POST http://localhost:8000/api/research/{research_id}/approve-sources \
   -H "Content-Type: application/json" \
   -d '{
@@ -222,71 +222,71 @@ curl -X POST http://localhost:8000/api/research/{research_id}/approve-sources \
 
 ---
 
-## 🚀 Améliorations Futures Possibles
+## 🚀 Possible Future Enhancements
 
-- 📄 Export PDF professionnel
-- 💾 Base de données (PostgreSQL)
-- 🔐 Authentification utilisateurs
-- 📊 Analytics et tableaux de bord
-- 🌐 Support multilingue
-- 🎨 Mode sombre
-- 📱 Application mobile
-- 🧪 Tests automatisés (Jest, Pytest)
+- 📄 Professional PDF export
+- 💾 Database (PostgreSQL)
+- 🔐 User authentication
+- 📊 Analytics and dashboards
+- 🌐 Multi-language support
+- 🎨 Dark mode
+- 📱 Mobile application
+- 🧪 Automated tests (Jest, Pytest)
 - 🐳 Docker & Docker Compose
-- ☁️ Déploiement cloud (AWS/GCP/Azure)
+- ☁️ Cloud deployment (AWS/GCP/Azure)
 
 ---
 
-## 🐛 Dépannage
+## 🐛 Troubleshooting
 
-### Le backend ne démarre pas
+### Backend won't start
 ```bash
-# Vérifier que l'environnement virtuel est activé
+# Check that virtual environment is activated
 source backend/venv/bin/activate
 
-# Réinstaller les dépendances
+# Reinstall dependencies
 pip install -r backend/requirements.txt
 
-# Vérifier la clé OpenAI
+# Check OpenAI key
 cat backend/.env
 ```
 
-### Le frontend ne démarre pas
+### Frontend won't start
 ```bash
-# Supprimer node_modules et réinstaller
+# Delete node_modules and reinstall
 cd frontend
 rm -rf node_modules package-lock.json
 npm install
 npm run dev
 ```
 
-### WebSocket ne se connecte pas
-- Vérifier que le backend tourne sur le port 8000
-- Vérifier la configuration proxy dans `frontend/vite.config.js`
-- Regarder la console browser pour les erreurs
+### WebSocket won't connect
+- Check that backend is running on port 8000
+- Check proxy configuration in `frontend/vite.config.js`
+- Check browser console for errors
 
-### Pas de résultats de recherche
-- Vérifier votre connexion internet
-- DuckDuckGo peut avoir des rate limits → Le système utilisera Wikipedia en fallback
-- Vérifier les logs backend pour les erreurs détaillées
+### No search results
+- Check your internet connection
+- DuckDuckGo may have rate limits → System will use Wikipedia as fallback
+- Check backend logs for detailed errors
 
 ---
 
 ## 📞 Documentation & Support
 
-### 📚 Documentation complète:
-- **`INSTALLATION_GUIDE.md`** - Guide d'installation pas à pas ⭐ **COMMENCER ICI**
-- **`ARCHITECTURE_DIAGRAM.md`** - Diagrammes et architecture détaillée
-- **`PROJECT_COMPLIANCE_REPORT.md`** - Conformité aux exigences du Project A
-- **`LANGFUSE_SETUP.md`** - Configuration du monitoring Langfuse
-- **`FULLSTACK_README.md`** - Documentation technique avancée
-- **`env_example.txt`** - Template des variables d'environnement
-- **http://localhost:3000/architecture** - Explication visuelle en temps réel
+### 📚 Complete documentation:
+- **`INSTALLATION_GUIDE.md`** - Step-by-step installation guide ⭐ **START HERE**
+- **`ARCHITECTURE_DIAGRAM.md`** - Diagrams and detailed architecture
+- **`PROJECT_COMPLIANCE_REPORT.md`** - Project A requirements compliance
+- **`LANGFUSE_SETUP.md`** - Langfuse monitoring configuration
+- **`FULLSTACK_README.md`** - Advanced technical documentation
+- **`env_example.txt`** - Environment variables template
+- **http://localhost:3000/architecture** - Real-time visual explanation
 
-### 🎯 Pour commencer rapidement:
-1. Suivre `INSTALLATION_GUIDE.md` (10 minutes)
-2. Lire `ARCHITECTURE_DIAGRAM.md` pour comprendre le système
-3. Vérifier `PROJECT_COMPLIANCE_REPORT.md` pour l'évaluation
+### 🎯 Quick start:
+1. Follow `INSTALLATION_GUIDE.md` (10 minutes)
+2. Read `ARCHITECTURE_DIAGRAM.md` to understand the system
+3. Check `PROJECT_COMPLIANCE_REPORT.md` for evaluation
 
 ---
 
@@ -320,4 +320,4 @@ MIT License - Open source
 
 **Built with ❤️ for intelligent research automation**
 
-🚀 Prêt à transformer vos recherches en briefings professionnels !
+🚀 Ready to transform your research into professional briefings!

@@ -310,14 +310,3 @@ npm run dev
 
 See `PROJECT_COMPLIANCE_REPORT.md` and `VECTOR_DATABASE_GUIDE.md` for details.
 
----
-
-## 📄 License
-
-MIT License - Open source
-
----
-
-**Built with ❤️ for intelligent research automation**
-
-🚀 Ready to transform your research into professional briefings!
